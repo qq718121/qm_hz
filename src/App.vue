@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <router-view  v-loading.fullscreen.lock="this.$store.state.loading"></router-view>
-   <oban></oban>
+    <router-view v-loading.fullscreen.lock="this.$store.state.loading"></router-view>
+    <oban v-if="moban_is_if"></oban>
   </div>
 </template>
 
@@ -10,37 +10,35 @@
   import oban from './components/moban/moban'
 
   export default {
-  name: 'app',
-  data(){
+    name: 'app',
+    data(){
       return {
-
+        moban_is_if: false
       }
-  },
-  mounted(){
-
-  },
-  components: {
+    },
+    mounted(){
+      this.moban_is_if = true;
+    },
+    components: {
       oban
-  },
-  created(){
+    },
+    created(){
 
-  },
-  methods:{
-
+    },
+    methods: {}
   }
-}
 
 </script>
 
 <style>
-#app {
-  width:100%;
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  font-size:0.252rem;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #000;
-  margin: 0;
-  padding: 0;
-}
+  #app {
+    width: 100%;
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    font-size: 0.252rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #000;
+    margin: 0;
+    padding: 0;
+  }
 </style>

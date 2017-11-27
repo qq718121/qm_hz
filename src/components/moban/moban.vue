@@ -14,8 +14,8 @@
           <span class="title_guize"></span>
 
           <div class="inner_">
-            <p>1、城市已所购青芒盒子指定楼盘所在城市为准</p>
-            <p>2、合作公寓租客需要在一年内偶买指定楼盘</p>
+            <p>1、城市以所购青芒盒子指定楼盘所在城市为准</p>
+            <p>2、合作公寓租客需要在一年内购买指定楼盘</p>
             <p>3、每套公寓房源仅支持1人领取补贴</p>
             <p>4、用户可在购买青芒盒子指定楼盘（签订购房合同）后在“青芒盒子”微信公众号联系客服，领取补贴</p>
           </div>
@@ -42,16 +42,14 @@
         <div class="qm_motai">
           <span class="close" v-on:click="cloce"></span>
           <span class="title_city"></span>
-
           <div class="inner_">
             <div class="house_div">
               <span class="house_" :class="[{'active_house' : $store.state.city_house_num == value.id }]"
                     v-for="(value,index) in $store.state.city_arr"
-                    @click="city_click_check(value,index)">{{value.provinceName}}</span>
+                    @click="city_click_check(value,index)">{{value.cityName}}</span>
             </div>
             <div class="house_btn" @click="city_yes_check">确定</div>
           </div>
-
         </div>
       </div>
       <div class='guize' v-if="this.$store.state.motai_num == '4' ">
@@ -79,7 +77,6 @@
           </div>
           <div class="house_btn_dable" @click="dabel_btn">再测一次</div>
           <div class="house_btn" @click="share_btn">分享</div>
-
         </div>
       </div>
 
@@ -89,7 +86,7 @@
 
       <div class="school__city"><span @click="city_click(value,index)"
                                       :class="[{'school__city_active' : $store.state.city_check_num == value.id }]"
-                                      v-for="(value,index) in $store.state.city_arr">{{value.provinceName}}</span></div>
+                                      v-for="(value,index) in $store.state.city_school_city_arr">{{value.provinceName}}</span></div>
 
       <div class="school__park_school"><span @click="check_school(value,index)"
                                              :class="[{'school__city_active' : $store.state.school_check_num == value.id }]"
@@ -113,10 +110,11 @@
         house_num: 0,
         school_num: 0,
         animated_six: '',
-        city_school_data: []
+        city_school_data: [],
+        share_desc:'',
+        share_title:'百万租金补贴疯狂派送'
       }
     },
-
     methods: {
       set(){
         alert('1');
@@ -144,10 +142,8 @@
       city_yes_check(){
         this.cloce();
         this.$bus.$emit('house_click');
-        this.$store.commit('clean_state');
       },
       city_click_check(sum, num){
-
         this.$bus.$emit('house_click');
         this.$store.commit('city_house_click', sum.id);
         this.$store.commit('city_house_value', num);
@@ -158,7 +154,7 @@
         this.$store.commit('city_click', sum.id);
         this.$store.commit('city_check_value', num);
         this.$bus.$emit('house_click');
-        let school_arr = this.$store.state.city_arr[num].universityList;
+        let school_arr = this.$store.state.city_school_city_arr[num].universityList;
         this.city_school_data = school_arr;
       },
 
@@ -170,7 +166,10 @@
       },
       //再测一次
       dabel_btn(){
-        this.$store.commit('clean_state');
+        this.$store.commit('clean_all');
+        this.$bus.$emit('house_click');
+        this.$bus.$emit('age_clean');
+        this.city_school_data = [];
         this.cloce();
       },
 
@@ -178,6 +177,8 @@
       share_btn(){
         window.scrollTo(0, 0);
         this.$store.commit('is_share');
+        this.share_desc = '我已测得每月'+this.$store.state.set_sum+'元补贴，你也快来试试！';
+        this.$weixin(this.share_title, this.share_desc);
       },
       is__share(){
         this.$store.commit('is_share');

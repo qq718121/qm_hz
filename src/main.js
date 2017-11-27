@@ -14,14 +14,14 @@ import weixin from './common/js/share'
 import {class_name_ftn} from './common/js/computed_class_name';
 import wx from 'weixin-js-sdk';
 
-
 Vue.config.productionTip = false;
 fastclick.attach(document.body);
 Vue.prototype.$Axios = Axios;
 Vue.prototype.$url = url;
 Vue.prototype.$store = store;
 Vue.prototype.$class_name_ftn = class_name_ftn;
-weixin();
+Vue.prototype.$weixin = weixin;
+
 setFontsize();
 
 Vue.use(Element);

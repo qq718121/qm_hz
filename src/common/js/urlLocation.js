@@ -4,7 +4,7 @@
 
 export const url ={
   //青芒盒子套图
-  qm_bg_one:'http://oxrgdeqd8.bkt.clouddn.com/banner@3x.png?imageslim',
+  qm_bg_one:'http://oxrgdeqd8.bkt.clouddn.com/banner.png',
   qm_bg_two:'http://oxrgdeqd8.bkt.clouddn.com/bg_blue@3x.png?imageslim',
   qm_bg_three:'http://oxrgdeqd8.bkt.clouddn.com/bg_yellow@3x.png?imageslim',
   qm_bg_fore:'http://oxrgdeqd8.bkt.clouddn.com/bg_purple@3x.png?imageslim',
@@ -19,7 +19,7 @@ export const url ={
   qm_num_999:'http://oxrgdeqd8.bkt.clouddn.com/999@3x.png?imageslim',
   qm_btn_small:'http://oxrgdeqd8.bkt.clouddn.com/Button_Small@3x.png?imageslim',
   qm_btn_large:'http://oxrgdeqd8.bkt.clouddn.com/Button_large@3x.png?imageslim',
-  qm_logo:'http://oxrgdeqd8.bkt.clouddn.com/logo@3x.png?imageslim',
+  qm_logo:'http://oxrgdeqd8.bkt.clouddn.com/logo@3x.png',
   qm_icon_zy:'http://oxrgdeqd8.bkt.clouddn.com/icon_zhuoyu@3x.png',
   qm_gongyu:'http://oxrgdeqd8.bkt.clouddn.com/pic_gongyu@3x.png',
   qm_num_666:'http://oxrgdeqd8.bkt.clouddn.com/666@3x.png?imageslim',
@@ -59,8 +59,11 @@ export const url ={
   //计算租金
     count:'http://www.cnmjw.com.cn/rentReturnHandler/computeReturnSubsidy/',
 
-  //获取城市
-  get_city:'http://www.cnmjw.com.cn/rentReturnHandler/getUniversities',
+  //获取院校城市
+  get_school_city:'http://www.cnmjw.com.cn/rentReturnHandler/getUniversities',
+
+   //获取城市
+  get_city:'http://www.cnmjw.com.cn/CooperateHouse/rentReturnHandler/getCitys',
 
    //获取公寓
   get_house:'http://www.cnmjw.com.cn/rentReturnHandler/getApartments',

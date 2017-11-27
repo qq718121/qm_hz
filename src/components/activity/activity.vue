@@ -58,7 +58,9 @@
         <p><span>4</span><span>联系青芒盒子客服，提交资料；</span></p>
         <p><span>5</span><span>青芒盒子核对信息，发放补贴。</span></p>
       </div>
-      <a href="http://mp.weixin.qq.com/s?__biz=MzIzMTc5NzQxMg==&mid=100006153&idx=1&sn=2efa5c1abc818afe0b881287d7371896&chksm=689ffec25fe877d444a4b71ddfefd6f1fd8f71222b0c3976ced984c4f5c1870b3c8eec201b2c#rd" class="activity__data">租金补贴活动详情介绍</a>
+      <a
+        href="http://mp.weixin.qq.com/s?__biz=MzIzMTc5NzQxMg==&mid=100006153&idx=1&sn=2efa5c1abc818afe0b881287d7371896&chksm=689ffec25fe877d444a4b71ddfefd6f1fd8f71222b0c3976ced984c4f5c1870b3c8eec201b2c#rd"
+        class="activity__data">租金补贴活动详情介绍</a>
       <div class="activity__logo"></div>
     </div>
 
@@ -71,8 +73,10 @@
     data(){
       return {
         timg_num: 0,
-        people_num: 0,
+        people_num: this.$store.state.people_num,
         mouse_plan: '',
+        share_title: '百万租金补贴疯狂派送',
+        share_desc: '',
         inter: '',
         tel: new RegExp(/^1[3|4|5|8][0-9]\d{4,8}$/),
         rules2: {
@@ -95,16 +99,19 @@
       this.$bus.$on('house_click', () => {
         this.render_data();
       });
-
+      this.$bus.$on('age_clean', () => {
+        this.activity_data.age = '';
+      });
       this.timg(this.$url.qm_img_arr);
     },
     mounted(){
       this.city_http();
       this.house_http();
+      this.city_school_http();
       let this_ = this;
       let id = setInterval(function () {
         this_.update_people();
-      }, 2000);
+      }, 20000);
     },
     methods: {
       //moban跳出之后渲染的内容以及动画效果
@@ -129,23 +136,16 @@
           return;
         }
 
-        let data = {};
-        data.house_id = this.$store.state.house_check_num;
-        data.city_id = this.$store.state.city_check_num;
-        data.school_id = this.$store.state.school_check_num;
-        data.city_house_id = this.$store.state.city_house_num;
-        data.age = this.activity_data.age;
-        let url = this.$url.count + data.city_house_id + '/' + data.house_id + '/' + data.school_id + '/' + data.age;
+        let house_id = this.$store.state.house_check_num;
+//        let city_id = this.$store.state.city_check_num;
+        let school_id = this.$store.state.school_check_num;
+        let city_house_id = this.$store.state.city_house_num;
+        let age = this.activity_data.age;
+        let url = this.$url.count + city_house_id + '/' + house_id + '/' + school_id + '/' + age;
         this.http_request(url);
         this.$store.commit('change_set_sum', '155');
         this.share_success();
         this.activity_rules('5', 'animated bounceIn');
-
-        //点击计算按钮之后清除所有的选项val，重新渲染默认状态
-        this.$store.commit('clean_all');
-        this.render_data();
-        this.activity_data.age = '';
-
       },
       href_(url){
         window.location.href = url;
@@ -161,6 +161,7 @@
       },
       share_(){
         this.$store.commit('is_share');
+//        this.$weixin(this.share_title, this.share_desc);
       },
       //img的定时闪动
       timg_ftn(){
@@ -173,13 +174,7 @@
         }
       },
       timg(){
-
         this.inter = setInterval(this.timg_ftn, 250);
-
-//        setTimeout(function () {
-//          clearInterval(a)
-//        }, 3000)
-
       },
       people(){
         let date = new Date();
@@ -187,7 +182,6 @@
 
       //组件销毁以后要清定时器
       destroyed(){
-
         clearInterval(this.inter);
       },
       //全局的状态值改变之后进行重新渲染数据
@@ -209,16 +203,17 @@
           this_.$store.commit('change_set_sum', res.data);
           this_.share_success();
           this_.activity_rules('5', 'animated bounceIn');
+          console.log(res.data);
         }).catch(function (err) {
           console.log(err);
         });
       },
-      //获取城市
-      city_http(){
+//      获取院校城市
+      city_school_http(){
         let this_ = this;
-        this.$Axios.post(this.$url.get_city).then(function (res) {
+        this.$Axios.post(this.$url.get_school_city).then(function (res) {
 
-          this_.$store.commit('city_arr_push', res.data);
+          this_.$store.commit('city_school_arr_push', res.data);
 
         }).catch(function (err) {
           console.log(err);
@@ -233,11 +228,24 @@
           console.log(err);
         });
       },
+      //获取城市
+      city_http(){
+        let this_ = this;
+        this.$Axios.post(this.$url.get_city).then(function (res) {
+           this_.$store.commit('city_arr_push', res.data);
+
+        }).catch(function (err) {
+          console.log(err);
+        });
+      },
       //更新在线人数
       update_people(){
         let this_ = this;
-        this.$Axios.get('http://www.cnmjw.com.cn/rentReturnHandler/getApplyCount/20/1').then(function (res) {
+        this.$Axios.get(this.$url.update_people + '/20/1').then(function (res) {
           this_.people_num = res.data;
+          this_.share_desc = '已有' + this_.people_num + '人领取，你也快来试试';
+          this_.$store.commit('people_num_change', this_.people_num);
+          this_.$weixin(this_.share_title, this_.share_desc);
         }).catch(function (err) {
           console.log(err);
         });
@@ -262,7 +270,7 @@
 
   .activity_header {
     width: 7.5rem;
-    background-image: url("http://oxrgdeqd8.bkt.clouddn.com/banner@3x.png?imageslim");
+    background-image: url("http://oxrgdeqd8.bkt.clouddn.com/banner.png");
     height: 7.8rem;
     background-size: 100%;
     position: relative;
@@ -421,7 +429,7 @@
   .activity__logo {
     width: 1.46rem;
     height: 0.34rem;
-    background-image: url('http://oxrgdeqd8.bkt.clouddn.com/logo@3x.png?imageslim');
+    background-image: url('http://oxrgdeqd8.bkt.clouddn.com/logo@3x.png');
     background-size: 100%;
     position: absolute;
     top: 7.05rem;
