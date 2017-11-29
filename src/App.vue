@@ -1,31 +1,26 @@
 <template>
   <div id="app">
-    <router-view v-loading.fullscreen.lock="this.$store.state.loading"></router-view>
-    <oban></oban>
+    <!--全局路由视口-->
+    <router-view></router-view>
+    <!--模态窗口组件-->
+    <oban v-if="this.$store.state.is_oban"></oban>
   </div>
 </template>
 
 <script>
-  import './common/css/common.css'
-  import oban from './components/moban/moban'
+  import './common/css/common.css'//引入全局css
+  import oban from './components/moban/moban'//引入模板组件
 
   export default {
     name: 'app',
-    data(){
-      return {
-
-      }
-    },
     mounted(){
+        //组件加载后设置模板默认弹出class为空
       this.$store.commit('set_school_class', '');
     },
     components: {
+        //挂载模板组件
       oban
-    },
-    created(){
-
-    },
-    methods: {}
+    }
   }
 
 </script>

@@ -86,13 +86,15 @@
 
       <div class="school__city"><span @click="city_click(value,index)"
                                       :class="[{'school__city_active' : $store.state.city_check_num == value.id }]"
-                                      v-for="(value,index) in $store.state.city_school_city_arr">{{value.provinceName}}</span></div>
+                                      v-for="(value,index) in $store.state.city_school_city_arr">{{value.provinceName}}</span>
+      </div>
 
       <div class="school__park_school"><span @click="check_school(value,index)"
                                              :class="[{'school__city_active' : $store.state.school_check_num == value.id }]"
                                              v-for="(value,index) in city_school_data">{{value.universityName}}</span>
       </div>
     </div>
+
     <div class="share_" @click="is__share" @touchmove.prevent v-if="$store.state.share_">
       <div class="written__"></div>
       <div class="fx__"></div>
@@ -107,21 +109,25 @@
   export default {
     data(){
       return {
-        house_num: 0,
-        school_num: 0,
-        animated_six: '',
+//        house_num: 0,
+//        school_num: 0,
+//        animated_six: '',
+        //记录当前切换的城市对应的院校集合
         city_school_data: [],
-        share_desc:'',
-        share_title:'百万租金补贴疯狂派送'
+        //初始化微信jssdk参数
+        share_desc: '',
+        share_title: '百万租金补贴疯狂派送'
       }
     },
     methods: {
-      set(){
-        alert('1');
-      },
-//关闭
+      //关闭模态窗口组件
       cloce(e){
+
         this.$store.commit('set_school_class', 'animated bounceOutRight');
+        let this_ = this;
+        setTimeout(function () {
+          this_.$store.commit('change_is_oban');
+        }, 500)
       },
 
       loadHref(){
@@ -129,27 +135,45 @@
         this.$store.commit('ismotai');
       },
 
-      //公寓数据记录
+      //每次点击选择公寓项执行的函数
       house_click(sum, num){
-        this.$store.state.house_check_num = sum.id;
+        //调用store的方法每次点击记录id以及给value赋值
+        this.$store.commit('house_click', sum.id);
         this.$store.commit('house_arr_value', num);
       },
+      //选择公寓之后点击确定按钮执行的函数
       house_yes_check(){
+        //点击确定之后首先关闭模态窗口
         this.cloce();
+        //触发house_click并且调用组件里面监听的回调函数进行页面的渲染值
         this.$bus.$emit('house_click');
       },
-      //确定
+
+      //选择城市之后点击确定按钮执行的函数
       city_yes_check(){
+        //触发house_click并且调用组件里面监听的回调函数进行页面的渲染值
         this.cloce();
         this.$bus.$emit('house_click');
       },
+      //每次点击选择城市项执行的函数
       city_click_check(sum, num){
+        //首先触发监听事件进行组件渲染
+        //每一次点击更改当前的ID
+        //再通过当前的INDEX在store的数组里面进行查找对应点击的城市名进行组件渲染
         this.$bus.$emit('house_click');
         this.$store.commit('city_house_click', sum.id);
         this.$store.commit('city_house_value', num);
       },
-      //城市数据记录
+
+      //每次点击选择院校城市项执行的函数
       city_click(sum, num){
+        /*
+         * 点击切换每一个院校城市必须要清除上一次选中的院校ID以及value
+         * 每一次点击更改当前的ID
+         * 每一次点击更改当前的vlaue
+         * 触发监听事件进行组件渲染
+         * 每一次切换城市拿到当前的院校集合
+         */
         this.$store.commit('clean_state');
         this.$store.commit('city_click', sum.id);
         this.$store.commit('city_check_value', num);
@@ -158,14 +182,26 @@
         this.city_school_data = school_arr;
       },
 
-      //院校数据记录
+      //每一次切换院校执行的函数
       check_school(sum, num){
+        /*
+         * 每一次切换院校更改当前的ID
+         * 每一次切换院校更改当前的value
+         * 触发监听事件更新组件
+         */
         this.$store.commit('school_click', sum.id);
         this.$store.commit('school_check_value', this.city_school_data[num].universityName);
         this.$bus.$emit('house_click');
       },
       //再测一次
       dabel_btn(){
+        /*
+         * 用户点击再测一次，首先清除所有当前的ID以及value
+         * 触发监听事件对组件进行清除渲染工作
+         * 触发监听事件对组件手机号进行清除渲染工作
+         * 清除渲染当前城市的院校集合
+         * 关闭模态窗口
+         */
         this.$store.commit('clean_all');
         this.$bus.$emit('house_click');
         this.$bus.$emit('age_clean');
@@ -175,11 +211,18 @@
 
       //分享
       share_btn(){
+        /*
+         * 让浏览器窗口置顶
+         * 分享模态窗口打开
+         * 更改微信jssdk分享的参数
+         * 重新初始化微信jssdk
+         */
         window.scrollTo(0, 0);
         this.$store.commit('is_share');
-        this.share_desc = '我已测得每月'+this.$store.state.set_sum+'元补贴，你也快来试试！';
+        this.share_desc = '我已测得每月' + this.$store.state.set_sum + '元补贴，你也快来试试！';
         this.$weixin(this.share_title, this.share_desc);
       },
+      //点击分享模态窗口进行关闭
       is__share(){
         this.$store.commit('is_share');
       }

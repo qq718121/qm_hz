@@ -21,7 +21,6 @@ Vue.prototype.$url = url;
 Vue.prototype.$store = store;
 Vue.prototype.$class_name_ftn = class_name_ftn;
 Vue.prototype.$weixin = weixin;
-
 setFontsize();
 
 Vue.use(Element);
@@ -39,7 +38,6 @@ let vm = new Vue({
 
 var bus = new Vue({});
 Vue.prototype.$bus = bus;
-console.log(bus)
 
 
 

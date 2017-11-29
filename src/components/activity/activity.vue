@@ -116,8 +116,14 @@
     methods: {
       //moban跳出之后渲染的内容以及动画效果
       activity_rules(num, className){
-        this.$store.commit('set_motai', num);
-        this.$store.commit('set_school_class', className);
+        if (!this.$store.state.is_oban) {
+          this.$store.commit('change_is_oban');
+          this.$store.commit('set_motai', num);
+          this.$store.commit('set_school_class', className);
+        } else {
+          this.$store.commit('set_motai', num);
+          this.$store.commit('set_school_class', className);
+        }
       },
       //马上计算
       last_btn(){
@@ -137,21 +143,16 @@
         }
 
         let house_id = this.$store.state.house_check_num;
-//        let city_id = this.$store.state.city_check_num;
         let school_id = this.$store.state.school_check_num;
         let city_house_id = this.$store.state.city_house_num;
         let age = this.activity_data.age;
         let url = this.$url.count + city_house_id + '/' + house_id + '/' + school_id + '/' + age;
         this.http_request(url);
-//        this.$store.commit('change_set_sum', '155');
-        this.share_success();
         this.activity_rules('5', 'animated bounceIn');
       },
+      //跳转第三方网页
       href_(url){
         window.location.href = url;
-      },
-      share_success(){
-        this.$store.commit('set_school_class', 'animated bounceOutRight');
       },
       share_error(err) {
         this.$message.error({
@@ -160,6 +161,8 @@
         });
       },
       share_(){
+        this.$store.commit('change_is_oban');
+        this.activity_rules('', '');
         this.$store.commit('is_share');
 //        this.$weixin(this.share_title, this.share_desc);
       },
@@ -173,11 +176,9 @@
           this.timg_num = 0;
         }
       },
+
       timg(){
         this.inter = setInterval(this.timg_ftn, 250);
-      },
-      people(){
-        let date = new Date();
       },
 
       //组件销毁以后要清定时器
@@ -193,17 +194,16 @@
         this.activity_data.school_data = state.school_check_value;
         this.activity_data.house_data = state.house_check_value;
       },
+      //更改计算结果
       set_sum(data){
         this.$bus.$emit('set_sum', data);
       },
-      //发送请求
+      //发送请求计算结果
       http_request(url){
         let this_ = this;
         this.$Axios.post(url).then(function (res) {
           this_.$store.commit('change_set_sum', res.data);
-          this_.share_success();
           this_.activity_rules('5', 'animated bounceIn');
-          console.log(res.data);
         }).catch(function (err) {
           console.log(err);
         });
