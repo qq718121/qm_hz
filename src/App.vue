@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view v-loading.fullscreen.lock="this.$store.state.loading"></router-view>
-    <oban v-if="moban_is_if"></oban>
+    <oban></oban>
   </div>
 </template>
 
@@ -13,11 +13,11 @@
     name: 'app',
     data(){
       return {
-        moban_is_if: false
+
       }
     },
     mounted(){
-      this.moban_is_if = true;
+      this.$store.commit('set_school_class', '');
     },
     components: {
       oban

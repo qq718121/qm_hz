@@ -53,9 +53,9 @@
     <div class="activity_flow">
       <div class="activity__look">
         <p><span>1</span><span>关注青芒盒子；</span></p>
-        <p><span>2</span><span>测算补贴金额；</span></p>
-        <p><span>3</span><span>购买青芒盒子指定楼盘；</span></p>
-        <p><span>4</span><span>联系青芒盒子客服，提交资料；</span></p>
+        <p><span>2</span><span>测算补贴金额申请报名；</span></p>
+        <p><span>3</span><span>青芒盒子客服联系用户，确定信息；</span></p>
+        <p><span>4</span><span>用户通过青芒盒子协助购买指定楼盘；</span></p>
         <p><span>5</span><span>青芒盒子核对信息，发放补贴。</span></p>
       </div>
       <a
@@ -78,7 +78,7 @@
         share_title: '百万租金补贴疯狂派送',
         share_desc: '',
         inter: '',
-        tel: new RegExp(/^1[3|4|5|8][0-9]\d{4,8}$/),
+        tel: new RegExp(/^1[3|4|5|8|7][0-9]\d{4,8}$/),
         rules2: {
           age: [
             {validator: this.checkAge, trigger: 'blur'}
@@ -143,7 +143,7 @@
         let age = this.activity_data.age;
         let url = this.$url.count + city_house_id + '/' + house_id + '/' + school_id + '/' + age;
         this.http_request(url);
-        this.$store.commit('change_set_sum', '155');
+//        this.$store.commit('change_set_sum', '155');
         this.share_success();
         this.activity_rules('5', 'animated bounceIn');
       },
@@ -212,9 +212,7 @@
       city_school_http(){
         let this_ = this;
         this.$Axios.post(this.$url.get_school_city).then(function (res) {
-
           this_.$store.commit('city_school_arr_push', res.data);
-
         }).catch(function (err) {
           console.log(err);
         });
@@ -232,12 +230,12 @@
       city_http(){
         let this_ = this;
         this.$Axios.post(this.$url.get_city).then(function (res) {
-           this_.$store.commit('city_arr_push', res.data);
-
+          this_.$store.commit('city_arr_push', res.data);
         }).catch(function (err) {
           console.log(err);
         });
       },
+
       //更新在线人数
       update_people(){
         let this_ = this;
@@ -251,6 +249,7 @@
         });
       }
     },
+
     computed: {
       now: function () {
         if (!this.people_num) {
